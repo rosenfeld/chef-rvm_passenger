@@ -26,7 +26,7 @@
 # limitations under the License.
 #
 
-default[:rvm_passenger][:version]        = "3.0.4"
+default[:rvm_passenger][:version]     = "3.0.5"
 default[:rvm_passenger][:rvm_ruby]       = "ree-1.8.7-2011.03@passenger"
 default[:rvm_passenger][:max_pool_size]  = "2"
 default[:rvm_passenger][:pool_idle_time] = "0"

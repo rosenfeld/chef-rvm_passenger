@@ -38,20 +38,21 @@ ruby_block "calculate rvm_passenger/module_path" do
   end
 end
 
-%w{ apache2-threaded-dev libapr1-dev libaprutil1-dev }.each do |pkg|
+if platform?("suse")
+  apache_dev_pkgs = %w{ apache2-devel libapr1-devel libapr-util1-devel }
+else
+  apache_dev_pkgs = %w{ apache2-threaded-dev libapr1-dev libaprutil1-dev }
+end
+apache_dev_pkgs.each do |pkg|
   package pkg do
     action :install
   end
 end
 
-execute "passenger_apache2_module" do
-  command %Q{
-    rvm #{node[:rvm_passenger][:rvm_ruby]} exec \
-      passenger-install-apache2-module -a
-  }
-  not_if do
-    File.exists? node[:rvm_passenger][:module_path]
-  end
+rvm_shell "passenger_apache2_module" do
+  ruby_string   node[:rvm_passenger][:rvm_ruby]
+  code          %{passenger-install-apache2-module -a}
+  not_if        { ::File.exists? node[:rvm_passenger][:module_path] }
 end
 
 template "#{node[:apache][:dir]}/mods-available/passenger.load" do
